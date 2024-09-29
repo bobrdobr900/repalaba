@@ -31,6 +31,14 @@ services:
     networks:
       - net
 
+  users_api:
+    container_name: users_api
+    build: ./TodoApi 
+    ports:
+      - "5000:80" 
+    networks:
+      - net
+
 networks:
   net:
     external: true
