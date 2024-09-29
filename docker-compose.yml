@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  mysql_srv:
+    container_name: mysql_srv
+    image: mysql:8.0
+    tty: true
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: qwerty
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_log:/var/log/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    networks:
+      - net
+
+  pma_srv:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql_srv
+      PMA_PORT: 3306
+    depends_on:
+      - mysql_srv
+    ports:
+      - 80:80
+    networks:
+      - net
+
+networks:
+  net:
+    external: true
+
+volumes:
+  mysql_data:
+    external: true
+  mysql_log:
+    external: true
